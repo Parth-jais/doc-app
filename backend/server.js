@@ -1,25 +1,17 @@
+// Add these two lines at the VERY top of seclearrver.js
+const dns = require('node:dns');
+dns.setServers(['1.1.1.1', '1.0.0.1']); // Forces Node to use Cloudflare directly
+
+require("dotenv").config();
 const express = require("express");
 
 const app=express();
+const connectDB = require("./config/db.js");
+
+connectDB();
+
 app.use(express.json());
 
 app.get("/",(req,res)=>{res.send("Doctor appointment API running")});
-
-app.get("/api/test", (req, res) => {
-  res.send("API is working babbyyy");
-});
-
-app.get("/api/doctor", (req, res) => {
-  res.json({
-    name: "Dr. Sharma",
-    speciality: "Cardiologist",
-    experience: 10
-  });
-});
-
-app.post("/api/register", (req, res) => {
-    console.log(req.body);
-    res.send("User registered");
-});
 
 app.listen(5000, ()=>{console.log("Server running on port 5000")});
