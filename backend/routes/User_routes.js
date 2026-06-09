@@ -34,11 +34,52 @@ router.post("/register", async (req, res) => {
       success: true,
       user,
     });
-    
+
   } catch (error) {
     console.log(error);
 
     res.json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+
+router.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const isMatch = await bcrypt.compare(
+      password,
+      user.password
+    );
+
+    if (!isMatch) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid credentials",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Login successful",
+    });
+
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
       success: false,
       message: error.message,
     });
