@@ -1,6 +1,8 @@
 const User = require("../models/User");
 const express = require("express");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const authUser = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -70,10 +72,16 @@ router.post("/login", async (req, res) => {
         message: "Invalid credentials",
       });
     }
+    
+    const token = jwt.sign(
+        { userId: user._id },
+        process.env.JWT_SECRET
+    );
 
     res.json({
       success: true,
       message: "Login successful",
+      token
     });
 
   } catch (error) {
@@ -85,5 +93,21 @@ router.post("/login", async (req, res) => {
     });
   }
 });
+
+
+router.get(
+  "/profile",
+  authUser,
+  async (req, res) => {
+    
+    const user = await User.findById(req.userId).select("-password");
+
+    res.json({
+        success: true,
+        user
+    });
+
+});
+
 
 module.exports = router;
