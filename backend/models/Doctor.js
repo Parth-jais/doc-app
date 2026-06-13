@@ -40,7 +40,13 @@ const doctorSchema = new mongoose.Schema({
   slots_booked: {
     type: Object,
     default: {}
+  },
+
+  available: {
+    type: Boolean,
+    default: true
   }
+  
 });
 
 module.exports = mongoose.model(

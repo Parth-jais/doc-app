@@ -77,4 +77,36 @@ const doctorAuth = async (req, res, next) => {
   }
 };
 
-module.exports = {authUser, doctorAuth};
+
+const adminAuth = async (req, res, next) => {
+
+    try {
+
+        const token = req.headers.token;
+
+        const decoded = jwt.verify(
+            token,
+            process.env.JWT_SECRET
+        );
+
+        if (decoded.role !== "admin") {
+            return res.json({
+                success: false,
+                message: "Unauthorized"
+            });
+        }
+
+        next();
+
+    } catch (error) {
+
+        res.json({
+            success: false,
+            message: "Invalid Token"
+        });
+
+    }
+
+};
+
+module.exports = {authUser, doctorAuth, adminAuth};

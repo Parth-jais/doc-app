@@ -159,4 +159,42 @@ router.get(
 
 });
 
+
+router.get(
+  "/dashboard",
+  doctorAuth,
+  async (req, res) => {
+    try {
+
+      const appointments =
+        await Appointment.find({
+          doctorId: req.doctorId
+        });
+
+      const totalAppointments =
+        appointments.length;
+
+      let totalRevenue = 0;
+      for (let app of appointments) {
+        if(app.status !== "Cancelled") totalRevenue += app.amount;
+      }
+
+      res.json({
+        success: true,
+        dashboardData: {
+          totalAppointments,
+          totalRevenue
+        }
+      });
+
+    } catch (error) {
+
+      res.json({
+        success: false,
+        message: error.message
+      });
+
+    }
+});
+
 module.exports = router;
