@@ -2,7 +2,7 @@ const User = require("../models/User");
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const authUser = require("../middleware/auth");
+const {authUser} = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -74,7 +74,7 @@ router.post("/login", async (req, res) => {
     }
     
     const token = jwt.sign(
-        { userId: user._id },
+        { userId: user._id , role:"user"},
         process.env.JWT_SECRET
     );
 
